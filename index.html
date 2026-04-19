@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meine KI Website</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      padding: 15px;
+      background: #1e293b;
+      text-align: center;
+      font-size: 1.5em;
+    }
+    #chat {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .msg {
+      margin: 10px 0;
+      padding: 10px 15px;
+      border-radius: 10px;
+      max-width: 70%;
+    }
+    .user {
+      background: #3b82f6;
+      margin-left: auto;
+    }
+    .bot {
+      background: #334155;
+      margin-right: auto;
+    }
+    footer {
+      display: flex;
+      padding: 10px;
+      background: #1e293b;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      margin-left: 10px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>🤖 Meine KI Website</header>
+
+  <div id="chat"></div>
+
+  <footer>
+    <input id="input" type="text" placeholder="Schreib etwas..." />
+    <button onclick="sendMessage()">Senden</button>
+  </footer>
+
+  <script>
+    const chat = document.getElementById("chat");
+
+    function addMessage(text, sender) {
+      const div = document.createElement("div");
+      div.className = "msg " + sender;
+      div.innerText = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function fakeAIResponse(input) {
+      // einfache Fake-KI
+      const responses = [
+        "Interessant! Erzähl mir mehr.",
+        "Warum denkst du das?",
+        "Das klingt spannend 🤔",
+        "Ich bin nur eine einfache Demo-KI 😄",
+        "Kannst du das genauer erklären?"
+      ];
+      return responses[Math.floor(Math.random() * responses.length)];
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("input");
+      const text = input.value.trim();
+      if (!text) return;
+
+      addMessage(text, "user");
+      input.value = "";
+
+      setTimeout(() => {
+        const reply = fakeAIResponse(text);
+        addMessage(reply, "bot");
+      }, 500);
+    }
+
+    document.getElementById("input").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
