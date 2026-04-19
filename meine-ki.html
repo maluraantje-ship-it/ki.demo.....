@@ -3,225 +3,376 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeuralCore AI</title>
+<title>NeuralCore AI • Zukunft beginnt jetzt</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@400;500&display=swap');
+
+:root {
+  --neon-cyan: #00f5ff;
+  --neon-purple: #a855f7;
+  --dark-bg: #020617;
+  --card-bg: #111827;
+}
+
+* { box-sizing: border-box; }
 
 body {
-  margin:0;
-  font-family: 'Orbitron', sans-serif;
-  background: radial-gradient(circle at top, #0f172a, #020617);
-  color:white;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at 50% 20%, #1e2937, #020617);
+  color: #e2e8f0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 header {
-  padding:20px;
-  text-align:center;
-  font-size:1.8em;
-  letter-spacing:2px;
-  background: linear-gradient(90deg,#00f5ff,#6366f1);
+  padding: 18px 20px;
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.1em;
+  font-weight: 700;
+  letter-spacing: 4px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+  border-bottom: 1px solid rgba(165, 243, 252, 0.2);
 }
 
 #chat {
-  flex:1;
-  padding:20px;
-  overflow-y:auto;
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: #64748b transparent;
 }
 
 .msg {
-  padding:14px 18px;
-  margin:12px 0;
-  border-radius:16px;
-  max-width:75%;
-  animation: fadeIn 0.3s ease;
+  max-width: 85%;
+  padding: 16px 20px;
+  border-radius: 18px;
+  line-height: 1.5;
+  animation: fadeInUp 0.4s ease forwards;
+  position: relative;
 }
 
-@keyframes fadeIn {
-  from {opacity:0; transform:translateY(10px);} 
-  to {opacity:1; transform:translateY(0);} 
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .user {
-  margin-left:auto;
-  background: linear-gradient(135deg,#2563eb,#7c3aed);
-  box-shadow:0 0 10px rgba(99,102,241,0.6);
+  align-self: flex-end;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: white;
+  box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+  border-bottom-right-radius: 4px;
 }
 
 .bot {
-  background:#111827;
-  border:1px solid #1f2937;
+  align-self: flex-start;
+  background: var(--card-bg);
+  border: 1px solid #334155;
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.15);
+  border-bottom-left-radius: 4px;
 }
 
-footer {
-  display:flex;
-  gap:10px;
-  padding:15px;
-  background:#020617;
-  border-top:1px solid #1f2937;
+.bot::before {
+  content: "🧠";
+  position: absolute;
+  left: -12px;
+  top: 12px;
+  font-size: 1.4em;
 }
 
-input {
-  flex:1;
-  padding:14px;
-  border-radius:12px;
-  border:none;
-  background:#111827;
-  color:white;
+.markdown {
+  font-size: 1.02em;
 }
 
-button {
-  padding:12px 16px;
-  border:none;
-  border-radius:12px;
-  background: linear-gradient(135deg,#00f5ff,#6366f1);
-  color:black;
-  font-weight:bold;
-  cursor:pointer;
-  transition:0.2s;
+.markdown pre {
+  background: #0f172a;
+  padding: 12px;
+  border-radius: 10px;
+  overflow-x: auto;
+  border-left: 4px solid var(--neon-cyan);
 }
 
-button:hover {
-  transform:scale(1.05);
+.markdown code {
+  background: rgba(0,0,0,0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
-.tools {
-  display:flex;
-  gap:10px;
-  padding:10px;
-  justify-content:center;
+#typing {
+  align-self: flex-start;
+  background: var(--card-bg);
+  padding: 14px 20px;
+  border-radius: 18px;
+  font-style: italic;
+  color: #94a3b8;
 }
 
 .panel {
-  display:flex;
-  justify-content:space-around;
-  padding:10px;
-  background:#020617;
-  border-top:1px solid #1f2937;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(2,6,23,0.95);
+  border-top: 1px solid #334155;
+  justify-content: center;
 }
 
 .card {
-  padding:10px;
-  background:#111827;
-  border-radius:12px;
-  cursor:pointer;
-  transition:0.2s;
+  background: var(--card-bg);
+  padding: 14px 20px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
+  border: 1px solid #475569;
+  font-size: 0.95em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .card:hover {
-  background:#1f2937;
-  transform:scale(1.05);
+  transform: translateY(-4px) scale(1.04);
+  background: #1e2937;
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 25px rgba(0,245,255,0.3);
 }
 
-.glow {
-  text-shadow:0 0 10px #00f5ff, 0 0 20px #6366f1;
+footer {
+  padding: 16px 20px;
+  background: #020617;
+  border-top: 1px solid #334155;
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
+input {
+  flex: 1;
+  padding: 16px 20px;
+  border-radius: 9999px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: white;
+  font-size: 1.05em;
+  outline: none;
+  transition: all 0.2s;
+}
+
+input:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 0 4px rgba(0,245,255,0.2);
+}
+
+button {
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  color: #020617;
+  font-size: 1.4em;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button:hover {
+  transform: scale(1.12) rotate(15deg);
+  box-shadow: 0 0 30px rgba(165,243,252,0.6);
+}
+
+.glow { text-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-purple); }
+
+/* Scrollbar Styling */
+#chat::-webkit-scrollbar { width: 6px; }
+#chat::-webkit-scrollbar-thumb { background: #64748b; border-radius: 10px; }
 </style>
 </head>
-
 <body>
+
 <header class="glow">NEURALCORE AI</header>
 
 <div id="chat"></div>
 
 <div class="panel">
-  <div class="card" onclick="quickPrompt('Erkläre mir etwas krasses über das Universum')">🌌 Wissen</div>
-  <div class="card" onclick="createImage()">🎨 Bild</div>
-  <div class="card" onclick="createPDF()">📄 PDF</div>
-  <div class="card" onclick="quickPrompt('Gib mir eine Business Idee')">💡 Ideen</div>
+  <div class="card" onclick="quickPrompt('Erkläre mir etwas absolut Krasses über das Universum')">🌌 Kosmisches Wissen</div>
+  <div class="card" onclick="createImage()">🎨 Bild generieren</div>
+  <div class="card" onclick="createPDF()">📄 Schönes PDF</div>
+  <div class="card" onclick="quickPrompt('Gib mir 3 geniale Business-Ideen für 2027')">💡 Ideen</div>
 </div>
 
 <footer>
-  <input id="input" placeholder="Sprich mit der Zukunft...">
-  <button onclick="sendMessage()">→</button>
+  <input id="input" placeholder="Sprich mit der Zukunft..." autocomplete="off">
+  <button onclick="sendMessage()" title="Senden">→</button>
 </footer>
 
 <script>
+// === API-KEY HIER EINFÜGEN (in Produktion besser über Backend-Proxy!) ===
 const API_KEY = "HIER_DEIN_OPENAI_API_KEY";
-const chat = document.getElementById("chat");
 
-function addMessage(text, sender) {
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
+
+function addMessage(text, sender, isHtml = false) {
   const div = document.createElement("div");
-  div.className = "msg " + sender;
-  div.innerText = text;
+  div.className = `msg ${sender}`;
+  
+  if (isHtml) {
+    div.innerHTML = text;
+  } else {
+    div.innerHTML = `<div class="markdown">${marked.parse(text)}</div>`;
+  }
+  
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
 
-async function sendMessage(customText=null) {
-  const input = document.getElementById("input");
+function showTyping() {
+  const typing = document.createElement("div");
+  typing.id = "typing";
+  typing.textContent = "NeuralCore denkt nach...";
+  chat.appendChild(typing);
+  chat.scrollTop = chat.scrollHeight;
+  return typing;
+}
+
+async function sendMessage(customText = null) {
   const text = customText || input.value.trim();
-  if(!text) return;
+  if (!text) return;
 
-  addMessage(text,"user");
-  input.value="";
+  addMessage(text, "user");
+  input.value = "";
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "Authorization":"Bearer " + API_KEY
-    },
-    body: JSON.stringify({
-      model:"gpt-4o-mini",
-      messages:[{role:"user",content:text}]
-    })
-  });
+  const typingIndicator = showTyping();
 
-  const data = await res.json();
-  const reply = data.choices?.[0]?.message?.content || "Fehler";
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",        // oder "gpt-4o" für bessere Qualität
+        messages: [{ role: "user", content: text }],
+        temperature: 0.85
+      })
+    });
 
-  addMessage(reply,"bot");
+    const data = await res.json();
+    typingIndicator.remove();
+
+    const reply = data.choices?.[0]?.message?.content || "Keine Antwort erhalten.";
+    addMessage(reply, "bot");
+
+  } catch (err) {
+    typingIndicator.remove();
+    addMessage("⚠️ Verbindung fehlgeschlagen. API-Key korrekt?", "bot");
+    console.error(err);
+  }
 }
 
-function quickPrompt(text){ sendMessage(text); }
+function quickPrompt(text) {
+  sendMessage(text);
+}
 
+// Bild generieren (DALL·E)
 async function createImage() {
-  const promptText = prompt("Beschreibe dein Bild");
-  if(!promptText) return;
+  const promptText = prompt("Beschreibe das Bild, das du generieren möchtest:");
+  if (!promptText) return;
 
-  addMessage("🎨 Generiere: " + promptText, "user");
+  addMessage(`🎨 Generiere Bild: <strong>${promptText}</strong>`, "user", true);
 
-  const res = await fetch("https://api.openai.com/v1/images/generations",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "Authorization":"Bearer " + API_KEY
-    },
-    body: JSON.stringify({ prompt: promptText, size:"1024x1024" })
-  });
+  const typing = showTyping();
 
-  const data = await res.json();
-  const imgUrl = data.data?.[0]?.url;
+  try {
+    const res = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "dall-e-3",           // oder dall-e-2
+        prompt: promptText,
+        n: 1,
+        size: "1024x1024"
+      })
+    });
 
-  const img = document.createElement("img");
-  img.src = imgUrl;
-  img.style.maxWidth = "320px";
-  img.style.borderRadius = "12px";
-  img.style.margin = "10px";
+    const data = await res.json();
+    typing.remove();
 
-  chat.appendChild(img);
+    if (data.data && data.data[0]) {
+      const imgUrl = data.data[0].url;
+      const imgDiv = document.createElement("div");
+      imgDiv.className = "msg bot";
+      imgDiv.innerHTML = `<img src="${imgUrl}" style="max-width:100%; border-radius:14px; margin-top:8px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">`;
+      chat.appendChild(imgDiv);
+      chat.scrollTop = chat.scrollHeight;
+    }
+  } catch (e) {
+    typing.remove();
+    addMessage("Bild-Generierung fehlgeschlagen.", "bot");
+  }
 }
 
+// PDF mit jsPDF (schön formatiert)
 function createPDF() {
-  const content = prompt("Text für PDF");
-  if(!content) return;
+  const content = prompt("Gib den Text ein, der ins PDF soll (kann mehrzeilig sein):");
+  if (!content) return;
 
-  const blob = new Blob([content], {type:"application/pdf"});
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "NeuralCore.pdf";
-  link.click();
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-  addMessage("📄 PDF erstellt","bot");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(20);
+  doc.text("NeuralCore AI", 105, 20, { align: "center" });
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(12);
+  doc.text(new Date().toLocaleString('de-DE'), 105, 30, { align: "center" });
+
+  doc.setLineWidth(0.5);
+  doc.line(20, 38, 190, 38);
+
+  const splitText = doc.splitTextToSize(content, 160);
+  doc.text(splitText, 25, 50);
+
+  doc.save("NeuralCore_Dokument.pdf");
+
+  addMessage("📄 Schönes PDF wurde generiert und heruntergeladen!", "bot");
 }
 
+// Enter-Taste zum Senden
+input.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendMessage();
+});
+
+// Begrüßung
+window.onload = () => {
+  setTimeout(() => {
+    addMessage("Hallo! Ich bin NeuralCore. Was möchtest du heute erkunden?", "bot");
+  }, 600);
+};
 </script>
 </body>
 </html>
